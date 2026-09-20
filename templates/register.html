@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="shell">
+        <div class="auth-card">
+            <h1>Create Account</h1>
+            <p class="subtitle">Secure registration with strong password validation.</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <form method="POST" class="auth-form">
+                <label for="username">Username</label>
+                <input id="username" name="username" type="text" placeholder="Enter username" required>
+
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" placeholder="Enter email" required>
+
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" placeholder="Create password" required>
+
+                <ul class="password-rules">
+                    <li>Minimum 8 characters</li>
+                    <li>Uppercase and lowercase</li>
+                    <li>One number</li>
+                    <li>One special character</li>
+                </ul>
+
+                <button type="submit" class="primary-btn">Register</button>
+            </form>
+
+            <p class="text-link">Already have an account? <a href="{{ url_for('auth.login') }}">Login</a></p>
+        </div>
+    </div>
+</body>
+</html>

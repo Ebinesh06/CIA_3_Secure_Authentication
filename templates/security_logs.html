@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Logs</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="dashboard-shell">
+        <aside class="sidebar">
+            <h2>CyberGuard</h2>
+            <nav>
+                <a href="{{ url_for('dashboard.dashboard_home') }}">Dashboard</a>
+                <a href="{{ url_for('dashboard.profile') }}">Profile</a>
+                <a href="{{ url_for('security.security_logs') }}" class="active">Security Logs</a>
+                <a href="{{ url_for('auth.logout') }}">Logout</a>
+            </nav>
+        </aside>
+
+        <main class="main-panel">
+            <header class="topbar">
+                <div>
+                    <p class="eyebrow">Audit trail</p>
+                    <h1>Security Event Logs</h1>
+                </div>
+            </header>
+
+            <section class="table-card">
+                <h3>Audit records</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Event</th>
+                            <th>Risk</th>
+                            <th>Action</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in logs %}
+                        <tr>
+                            <td>{{ log.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>{{ log.event }}</td>
+                            <td>{{ log.risk_level or 'N/A' }}</td>
+                            <td>{{ log.action or 'N/A' }}</td>
+                            <td>{{ log.details or 'No details' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="table-card">
+                <h3>Recent login attempts</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>IP</th>
+                            <th>Outcome</th>
+                            <th>Risk</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for attempt in attempts %}
+                        <tr>
+                            <td>{{ attempt.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>{{ attempt.ip_address or 'Unknown' }}</td>
+                            <td>{{ attempt.outcome or 'N/A' }}</td>
+                            <td>{{ attempt.risk_level or 'N/A' }}</td>
+                            <td>{{ attempt.details or 'No details' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

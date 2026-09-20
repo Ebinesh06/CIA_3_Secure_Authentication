@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MFA Verification</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="shell">
+        <div class="auth-card wide-card">
+            <h1>Multi-Factor Authentication</h1>
+            <p class="subtitle">The AI risk engine classified this login as medium-risk.</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <div class="risk-box risk-medium">
+                <h3>Risk Assessment: {{ risk_result.risk_level }}</h3>
+                <p>Risk Score: <strong>{{ risk_result.risk_score }}</strong>/100</p>
+                <ul>
+                    {% for reason in risk_result.reasons %}
+                        <li>{{ reason }}</li>
+                    {% endfor %}
+                </ul>
+                <p><strong>Action:</strong> {{ risk_result.recommendation }}</p>
+            </div>
+
+            <div class="mfa-box">
+                <h3>Authenticator Setup</h3>
+                <p><strong>Secret:</strong> {{ secret }}</p>
+                <p>Use an authenticator app such as Google Authenticator or Microsoft Authenticator.</p>
+            </div>
+
+            <form method="POST" class="auth-form">
+                <label for="otp">One-Time Password (OTP)</label>
+                <input id="otp" name="otp" type="text" placeholder="Enter 6-digit code" maxlength="6" required>
+                <button type="submit" class="primary-btn">Verify MFA</button>
+            </form>
+
+            <p class="text-link"><a href="{{ url_for('auth.login') }}">Back to login</a></p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="shell">
+        <div class="auth-card">
+            <h1>AI Risk-Adaptive Secure Authentication</h1>
+            <p class="subtitle">Adaptive login security powered by anomaly detection.</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            {% if risk_result %}
+            <div class="risk-box risk-{{ risk_status|lower }}">
+                <h3>Risk Assessment: {{ risk_result.risk_level }}</h3>
+                <p>Risk Score: <strong>{{ risk_result.risk_score }}</strong>/100</p>
+                <ul>
+                    {% for reason in risk_result.reasons %}
+                        <li>{{ reason }}</li>
+                    {% endfor %}
+                </ul>
+                <p><strong>Action:</strong> {{ risk_result.recommendation }}</p>
+            </div>
+            {% endif %}
+
+            <form method="POST" class="auth-form">
+                <label for="username">Username or Email</label>
+                <input id="username" name="username" type="text" placeholder="demo or demo@example.com" required>
+
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" placeholder="Enter password" required>
+
+                <label for="demo_mode">Demo simulation</label>
+                <select id="demo_mode" name="demo_mode">
+                    <option value="normal">Normal login</option>
+                    <option value="medium">Suspicious login (MFA required)</option>
+                    <option value="high">High-risk login (blocked)</option>
+                </select>
+
+                <button type="submit" class="primary-btn">Login</button>
+            </form>
+
+            <div class="demo-box">
+                <h3>Demo credentials</h3>
+                <p><strong>Username:</strong> demo</p>
+                <p><strong>Password:</strong> Demo@123</p>
+            </div>
+
+            <p class="text-link">New user? <a href="{{ url_for('auth.register') }}">Register here</a></p>
+        </div>
+    </div>
+</body>
+</html>

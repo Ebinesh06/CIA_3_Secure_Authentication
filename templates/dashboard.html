@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="dashboard-shell">
+        <aside class="sidebar">
+            <h2>CyberGuard</h2>
+            <nav>
+                <a href="{{ url_for('dashboard.dashboard_home') }}" class="active">Dashboard</a>
+                <a href="{{ url_for('dashboard.profile') }}">Profile</a>
+                <a href="{{ url_for('security.security_logs') }}">Security Logs</a>
+                <a href="{{ url_for('auth.logout') }}">Logout</a>
+            </nav>
+        </aside>
+
+        <main class="main-panel">
+            <header class="topbar">
+                <div>
+                    <p class="eyebrow">Security overview</p>
+                    <h1>Authentication Dashboard</h1>
+                </div>
+                <div class="welcome-tag">Welcome, {{ user.username }}</div>
+            </header>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <span>Total logins</span>
+                    <strong>{{ total_attempts }}</strong>
+                </div>
+                <div class="stat-card success">
+                    <span>Successful logins</span>
+                    <strong>{{ successful_logins }}</strong>
+                </div>
+                <div class="stat-card warning">
+                    <span>Failed logins</span>
+                    <strong>{{ failed_logins }}</strong>
+                </div>
+                <div class="stat-card danger">
+                    <span>Suspicious logins</span>
+                    <strong>{{ suspicious_logins }}</strong>
+                </div>
+                <div class="stat-card blocked">
+                    <span>Blocked logins</span>
+                    <strong>{{ blocked_logins }}</strong>
+                </div>
+                <div class="stat-card dark">
+                    <span>MFA challenges</span>
+                    <strong>{{ mfa_challenges }}</strong>
+                </div>
+            </section>
+
+            <section class="chart-grid">
+                <div class="chart-card">
+                    <h3>Recent risk scores</h3>
+                    <div class="chart-bar-container" id="riskChart" data-risk-scores='{{ risk_scores | tojson }}'></div>
+                </div>
+
+                <div class="chart-card">
+                    <h3>Login activity</h3>
+                    <div class="activity-chart" id="activityChart" data-activity='{{ login_activity | tojson }}'></div>
+                </div>
+            </section>
+
+            <section class="table-card">
+                <h3>Recent security events</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Event</th>
+                            <th>Risk</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for event in recent_events %}
+                        <tr>
+                            <td>{{ event.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>{{ event.event }}</td>
+                            <td>{{ event.risk_level or 'N/A' }}</td>
+                            <td>{{ event.action or 'N/A' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
